@@ -39,6 +39,7 @@ class InlineAsrOptions(BaseAsrOptions):
         AcceleratorDevice.CPU,
         AcceleratorDevice.CUDA,
         AcceleratorDevice.MPS,
+        AcceleratorDevice.NPU,
     ]
 
     @property
@@ -53,5 +54,6 @@ class InlineAsrNativeWhisperOptions(InlineAsrOptions):
     supported_devices: List[AcceleratorDevice] = [
         AcceleratorDevice.CPU,
         AcceleratorDevice.CUDA,
+        AcceleratorDevice.NPU,
     ]
     word_timestamps: bool = True

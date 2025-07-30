@@ -17,7 +17,7 @@ class AcceleratorDevice(str, Enum):
     CPU = "cpu"
     CUDA = "cuda"
     MPS = "mps"
-
+    NPU = "npu"
 
 class AcceleratorOptions(BaseSettings):
     model_config = SettingsConfigDict(

@@ -17,11 +17,13 @@ def decide_device(
     2. User-defined: Check if the device actually exists, otherwise fall-back to CPU
     """
     import torch
+    # import torch_npu
 
     device = "cpu"
 
     has_cuda = torch.backends.cuda.is_built() and torch.cuda.is_available()
     has_mps = torch.backends.mps.is_built() and torch.backends.mps.is_available()
+    has_npu = torch.npu.is_available()
 
     if supported_devices is not None:
         if has_cuda and AcceleratorDevice.CUDA not in supported_devices:
@@ -34,9 +36,16 @@ def decide_device(
                 f"Removing MPS from available devices because it is not in {supported_devices=}"
             )
             has_mps = False
-
+        if has_npu and AcceleratorDevice.NPU not in supported_devices:
+            _log.info(
+                f"Removing NPU from available devices because it is not in {supported_devices=}"
+            )
+            has_npu = False
+        
     if accelerator_device == AcceleratorDevice.AUTO.value:  # Handle 'auto'
-        if has_cuda:
+        if has_npu:
+            device = "npu"
+        elif has_cuda:
             device = "cuda:0"
         elif has_mps:
             device = "mps"
@@ -70,7 +79,11 @@ def decide_device(
             device = "mps"
         else:
             _log.warning("MPS is not available in the system. Fall back to 'CPU'")
-
+    elif accelerator_device == AcceleratorDevice.NPU.value:
+        if has_npu:
+            device = "npu"
+        else:
+            _log.warning("NPU is not available in the system. Fall back to 'CPU'")
     elif accelerator_device == AcceleratorDevice.CPU.value:
         device = "cpu"
 
