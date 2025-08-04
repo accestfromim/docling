@@ -17,7 +17,7 @@ def decide_device(
     2. User-defined: Check if the device actually exists, otherwise fall-back to CPU
     """
     import torch
-    # import torch_npu
+    import torch_npu
 
     device = "cpu"
 
